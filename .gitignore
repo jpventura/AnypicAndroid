@@ -1,0 +1,48 @@
+### Android Studio ###
+.externalNativeBuild
+.navigation/
+captures/
+
+### ART/Dalvik VM ###
+*.dex
+
+### Built application ###
+*.ap_
+*.apk
+
+### Eclipse ###
+.project
+.settings/
+bin/
+gen/
+out/
+proguard/
+
+### Emacs ###
+*~
+.*~
+.\#*
+\#*
+
+### Gradle ###
+.gradle/
+build/
+
+### Intellij ###
+*.idea/
+*.iml
+
+### Java class ###
+*.class
+
+### Keystore ###
+*.jks
+
+### Local (SDK, PATH, etc) ###
+local.properties
+
+### Log ###
+*.log
+
+### OS X ###
+.DS_Store
