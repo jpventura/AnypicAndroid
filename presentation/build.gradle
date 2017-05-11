@@ -54,6 +54,7 @@ dependencies {
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile "com.android.support:support-vector-drawable:$rootProject.supportLibraryVersion"
     compile "com.google.guava:guava:$rootProject.guavaVersion"
+    compile project(':repository')
     compile fileTree(dir: "libs", include: ["*.jar"])
 
     debugCompile 'com.facebook.stetho:stetho:1.5.0'
