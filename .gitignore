@@ -39,6 +39,7 @@ build/
 *.jks
 
 ### Local (SDK, PATH, etc) ###
+google-services.json
 local.properties
 
 ### Log ###
