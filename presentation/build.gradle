@@ -56,6 +56,8 @@ dependencies {
     compile "com.google.guava:guava:$rootProject.guavaVersion"
     compile fileTree(dir: "libs", include: ["*.jar"])
 
+    debugCompile 'com.facebook.stetho:stetho:1.5.0'
+
     androidTestCompile("com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion", {
         exclude group: "com.android.support", module: "support-annotations"
     })
