@@ -28,6 +28,7 @@ ext {
     targetSdkVersion = 25
 
     // App dependencies
+    butterKnifeVersion = '8.5.1'
     espressoVersion = '2.2.2'
     firebaseLibraryVersion = rootProject.googlePlayServicesVersion
     guavaVersion = '18.0'

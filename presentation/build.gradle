@@ -51,11 +51,14 @@ android {
 }
 
 dependencies {
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.butterKnifeVersion"
+
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile "com.android.support:support-vector-drawable:$rootProject.supportLibraryVersion"
     compile "com.google.firebase:firebase-auth:$rootProject.firebaseLibraryVersion"
     compile "com.google.guava:guava:$rootProject.guavaVersion"
+    compile 'com.jakewharton:butterknife:8.5.1'
     compile project(':repository')
     compile fileTree(dir: "libs", include: ["*.jar"])
 
