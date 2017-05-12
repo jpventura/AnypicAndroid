@@ -9,9 +9,23 @@ import java.util.Observer;
 
 class Connection extends Observable implements FirebaseAuth.AuthStateListener {
 
+    private static final Object LOCK = new Object();
+
+    private static Connection sConnection;
+
     private final FirebaseAuth mAuth;
 
-    Connection() {
+    public static synchronized Connection getInstance() {
+        if (null == sConnection) {
+            synchronized (LOCK) {
+                sConnection = new Connection();
+            }
+        }
+
+        return sConnection;
+    }
+
+    private Connection() {
         mAuth = FirebaseAuth.getInstance();
     }
 
