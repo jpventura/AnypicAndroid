@@ -1,5 +1,22 @@
+/*
+ * Copyright (c) 2017 Joao Paulo Fernandes Ventura
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.jpventura.anypic.authentication;
 
+import android.accounts.AccountAuthenticatorActivity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -28,19 +45,25 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.jpventura.anypic.R;
+import com.jpventura.anypic.TaskObserver;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class AuthenticationActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity implements LoaderCallbacks<Cursor>,
+        AuthenticationContract.View {
 
+    private AccountAuthenticatorActivity x;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -63,6 +86,10 @@ public class AuthenticationActivity extends AppCompatActivity implements LoaderC
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private Button mEmailSignInButton;
+
+    private AuthenticationContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +121,20 @@ public class AuthenticationActivity extends AppCompatActivity implements LoaderC
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        setPresenter(new AuthenticationPresenter(this));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mPresenter.stop();
+        super.onStop();
     }
 
     private void populateAutoComplete() {
@@ -187,8 +228,9 @@ public class AuthenticationActivity extends AppCompatActivity implements LoaderC
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+//            mAuthTask = new UserLoginTask(email, password);
+//            mAuthTask.execute((Void) null);
+            Task<AuthResult> task = mPresenter.signIn(email, password).addOnSuccessListener(mObserver).addOnFailureListener(mObserver);
         }
     }
 
@@ -272,6 +314,11 @@ public class AuthenticationActivity extends AppCompatActivity implements LoaderC
 
     }
 
+    @Override
+    public void setPresenter(AuthenticationContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -348,6 +395,25 @@ public class AuthenticationActivity extends AppCompatActivity implements LoaderC
             showProgress(false);
         }
     }
+
+    private final TaskObserver<AuthResult> mObserver = new TaskObserver<AuthResult>() {
+
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            Toast.makeText(AuthenticationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            showProgress(false);
+        }
+
+        @Override
+        public void onSuccess(AuthResult authResult) {
+            showProgress(false);
+
+            mEmailView.setText(authResult.getUser().getEmail());
+            Toast.makeText(AuthenticationActivity.this, authResult.getUser().getEmail(), Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+    };
 
 }
 
