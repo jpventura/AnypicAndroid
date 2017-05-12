@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -62,6 +63,8 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity implements LoaderCallbacks<Cursor>,
         AuthenticationContract.View {
+
+    private static final String LOG_TAG = AuthenticationActivity.class.getSimpleName();
 
     private AccountAuthenticatorActivity x;
     /**
@@ -381,6 +384,7 @@ public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity
     }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
+        Log.d(LOG_TAG, "addEmailsToAutoComplete");
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(AuthenticationActivity.this,
