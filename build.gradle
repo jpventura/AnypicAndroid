@@ -31,6 +31,7 @@ ext {
     butterKnifeVersion = '8.5.1'
     constrainLayoutVersion = '1.0.2'
     espressoVersion = '2.2.2'
+    guavaVersion = '18.0'
     junitVersion = '4.12'
     supportLibraryVersion = '25.4.0'
 }
