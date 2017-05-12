@@ -348,5 +348,6 @@ public class AuthenticationActivity extends AppCompatActivity implements LoaderC
             showProgress(false);
         }
     }
+
 }
 
