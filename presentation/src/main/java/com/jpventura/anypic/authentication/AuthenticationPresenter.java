@@ -16,7 +16,6 @@
 
 package com.jpventura.anypic.authentication;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.Task;
@@ -54,6 +53,12 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
         mAuth.removeAuthStateListener(this);
     }
 
+    @Override
+    public Task<AuthResult> signUp(@NonNull final String email, @NonNull final String password) {
+        return mAuth.createUserWithEmailAndPassword(checkNotNull(email), checkNotNull(password));
+    }
+
+    @Override
     public Task<AuthResult> signIn(@NonNull final String email, @NonNull final String password) {
         return mAuth.signInWithEmailAndPassword(checkNotNull(email), checkNotNull(password));
     }

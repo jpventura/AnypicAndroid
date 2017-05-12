@@ -29,6 +29,8 @@ public class AuthenticationContract {
 
         Task<AuthResult> signIn(@NonNull String email, @NonNull String password);
 
+        Task<AuthResult> signUp(@NonNull final String email, @NonNull final String password);
+
     }
 
     interface View extends BaseView<Presenter> {
