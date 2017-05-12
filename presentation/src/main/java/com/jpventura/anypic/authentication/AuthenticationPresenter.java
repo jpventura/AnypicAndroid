@@ -17,6 +17,7 @@
 package com.jpventura.anypic.authentication;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,6 +32,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class AuthenticationPresenter implements AuthStateListener, Presenter {
 
+    private static final String LOG_TAG = AuthenticationPresenter.class.getSimpleName();
+
     private FirebaseAuth mAuth;
     private WeakReference<AuthenticationActivity> mActivity;
 
@@ -41,6 +44,7 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth authenticator) {
+        Log.e(LOG_TAG, authenticator.toString());
     }
 
     @Override
