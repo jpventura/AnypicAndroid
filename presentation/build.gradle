@@ -38,6 +38,7 @@ android {
             useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+            resValue "string", "account_type", "com.jpventura.anypic"
             signingConfig signingConfigs.debug
         }
         release {
@@ -45,6 +46,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+            resValue "string", "account_type", "com.jpventura.anypic"
             signingConfig signingConfigs.release
         }
     }

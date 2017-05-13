@@ -16,7 +16,10 @@
 
 package com.jpventura.anypic.authentication;
 
+import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountManager;
+import android.accounts.AuthenticatorDescription;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -238,10 +241,29 @@ public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+            // showProgress(true);
+
+            for (AuthenticatorDescription type : AccountManager.get(this).getAuthenticatorTypes()) {
+                Log.d(LOG_TAG, type.packageName);
+                Log.d(LOG_TAG, "accountPreferencesId: " + Integer.toString(type.accountPreferencesId));
+                Log.d(LOG_TAG, "customTokens        : " + Boolean.toString(type.customTokens));
+                Log.d(LOG_TAG, "packageName         : " + type.toString());
+                Log.d(LOG_TAG, "type                : " + type.type);
+
+                Account[] accounts = AccountManager.get(this).getAccountsByType(type.type);
+
+                if ((null == accounts) || accounts.length == 0) {
+                    Log.e(LOG_TAG, "nao tem");
+                }
+
+                for (Account account : accounts) {
+                    Log.w(LOG_TAG, account.toString());
+                }
+            }
+
 //            mAuthTask = new UserLoginTask(email, password);
 //            mAuthTask.execute((Void) null);
-            Task<AuthResult> task = mPresenter.signIn(email, password).addOnSuccessListener(mObserver).addOnFailureListener(mObserver);
+            // Task<AuthResult> task = mPresenter.signIn(email, password).addOnSuccessListener(mObserver).addOnFailureListener(mObserver);
         }
     }
 
@@ -294,7 +316,10 @@ public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity
             showProgress(true);
 //            mAuthTask = new UserLoginTask(email, password);
 //            mAuthTask.execute((Void) null);
-            mPresenter.signUp(email, password).addOnSuccessListener(mObserver).addOnFailureListener(mObserver);
+            // FIXME
+            mPresenter.signUp(email, password)
+                    .addOnSuccessListener(mObserver)
+                    .addOnFailureListener(mObserver);
         }
     }
 
@@ -461,7 +486,7 @@ public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity
         }
     }
 
-    private final TaskObserver<AuthResult> mObserver = new TaskObserver<AuthResult>() {
+    private final TaskObserver<Account> mObserver = new TaskObserver<Account>() {
 
         @Override
         public void onFailure(@NonNull Exception e) {
@@ -470,11 +495,11 @@ public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity
         }
 
         @Override
-        public void onSuccess(AuthResult authResult) {
+        public void onSuccess(Account account) {
             showProgress(false);
 
-            mEmailView.setText(authResult.getUser().getEmail());
-            Toast.makeText(AuthenticationActivity.this, authResult.getUser().getEmail(), Toast.LENGTH_LONG).show();
+            mEmailView.setText(account.name);
+            Toast.makeText(AuthenticationActivity.this, account.toString(), Toast.LENGTH_LONG).show();
             finish();
         }
 
