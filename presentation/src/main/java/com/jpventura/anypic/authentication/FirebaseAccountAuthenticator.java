@@ -19,21 +19,29 @@ package com.jpventura.anypic.authentication;
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
 
+    private final AccountManager mAccountManager;
     private final FirebaseAuth mAuthenticator;
 
     FirebaseAccountAuthenticator(@NonNull final Context context) {
         super(checkNotNull(context));
+        mAccountManager = AccountManager.get(context);
         mAuthenticator = FirebaseAuth.getInstance();
     }
 
@@ -77,14 +85,28 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
         return null;
     }
 
+    public Task<Bundle> getAuthToken(Account account,
+                                     String authTokenType,
+                                     Bundle options) throws NetworkErrorException {
+
+        final String customToken = mAccountManager.peekAuthToken(account, authTokenType);
+
+        return mAuthenticator.signInWithCustomToken(customToken)
+                .continueWithTask(new GetFirebaseTokenTask(true))
+                .continueWith(new AssembleAuthTokenTask());
+    }
+
     /**
      * {@inheritDoc}
      */
+    @WorkerThread
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response,
                                Account account,
                                String authTokenType,
                                Bundle options) throws NetworkErrorException {
+        String customToken = mAccountManager.peekAuthToken(account, authTokenType);
+        mAuthenticator.signInWithCustomToken(mAccountManager.peekAuthToken(account, authTokenType));
         return null;
     }
 
@@ -123,6 +145,40 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
                                     String authTokenType,
                                     Bundle options) throws NetworkErrorException {
         return null;
+    }
+
+    private class AssembleAuthTokenTask implements Continuation<GetTokenResult, Bundle> {
+
+        @Override
+        public Bundle then(@NonNull Task<GetTokenResult> task) throws Exception {
+            final String accountName = mAuthenticator.getCurrentUser().getEmail();
+            final String accountType = "com.jpventura.anypic";
+            final String authTokenType = "email";
+            final Bundle result = new Bundle();
+
+            result.putString(AccountManager.KEY_ACCOUNT_NAME, accountName);
+            result.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
+            result.putString(AccountManager.KEY_AUTHTOKEN, task.getResult().getToken());
+            result.putString(AccountManager.KEY_AUTH_TOKEN_LABEL, authTokenType);
+
+            return result;
+        }
+
+    }
+
+    private class GetFirebaseTokenTask implements Continuation<AuthResult, Task<GetTokenResult>> {
+
+        private final boolean mForceRefresh;
+
+        GetFirebaseTokenTask(final boolean forceRefresh) {
+            mForceRefresh = forceRefresh;
+        }
+
+        @Override
+        public Task<GetTokenResult> then(@NonNull Task<AuthResult> task) throws Exception {
+            return task.getResult().getUser().getToken(mForceRefresh);
+        }
+
     }
 
 }
