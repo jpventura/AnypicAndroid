@@ -24,12 +24,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
 
+    private final FirebaseAuth mAuthenticator;
+
     FirebaseAccountAuthenticator(@NonNull final Context context) {
         super(checkNotNull(context));
+        mAuthenticator = FirebaseAuth.getInstance();
     }
 
     /**
