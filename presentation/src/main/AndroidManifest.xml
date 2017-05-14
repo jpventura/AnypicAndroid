@@ -30,8 +30,9 @@
         </activity>
 
         <activity
-            android:name=".authentication.AuthenticationActivity"
-            android:label="@string/title_activity_authentication" />
+            android:name=".authentication.FirebaseAuthenticatorActivity"
+            android:label="@string/title_activity_authentication"
+            android:theme="@style/Theme.Anypic.NoActionBar"/>
 
         <service android:name=".authentication.AuthenticatorService">
             <intent-filter>

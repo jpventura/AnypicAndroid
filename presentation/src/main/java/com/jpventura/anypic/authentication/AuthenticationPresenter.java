@@ -19,7 +19,6 @@ package com.jpventura.anypic.authentication;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -31,6 +30,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.GetTokenResult;
 import com.jpventura.anypic.authentication.AuthenticationContract.Presenter;
 
@@ -44,9 +44,9 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
 
     private final AccountManager mAccountManager;
     private final FirebaseAuth mAuth;
-    private WeakReference<AuthenticationActivity> mActivity;
+    private WeakReference<FirebaseAuthenticatorActivity> mActivity;
 
-    AuthenticationPresenter(AuthenticationActivity activity) {
+    AuthenticationPresenter(FirebaseAuthenticatorActivity activity) {
         mAccountManager = AccountManager.get(activity);
         mActivity = new WeakReference<>(activity);
         mAuth = FirebaseAuth.getInstance();
@@ -143,6 +143,7 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
 
         SignUpWithEmailAndPasswordTask(@NonNull final String email, @NonNull final String password) {
             mEmail = checkNotNull(email);
+            FirebaseAuthUserCollisionException e;
             mPassword = checkNotNull(password);
         }
 
