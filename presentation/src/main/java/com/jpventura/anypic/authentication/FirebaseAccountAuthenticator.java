@@ -22,9 +22,11 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
+import android.util.Log;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -32,17 +34,29 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GetTokenResult;
 
+import java.lang.ref.WeakReference;
+
+import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
+import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
+import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
+import static android.accounts.AccountManager.KEY_AUTH_TOKEN_LABEL;
+import static android.accounts.AccountManager.KEY_INTENT;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
+class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
+
+    private static final String LOG_TAG = FirebaseAccountAuthenticator.class.getSimpleName();
 
     private final AccountManager mAccountManager;
     private final FirebaseAuth mAuthenticator;
+    private final WeakReference<Context> mContext;
 
     FirebaseAccountAuthenticator(@NonNull final Context context) {
         super(checkNotNull(context));
         mAccountManager = AccountManager.get(context);
         mAuthenticator = FirebaseAuth.getInstance();
+        mContext = new WeakReference<>(context);
     }
 
     /**
@@ -51,10 +65,18 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response,
                              String accountType,
-                             String authTokenType,
+                             String authTokenLabel,
                              String[] requiredFeatures,
                              Bundle options) throws NetworkErrorException {
-        return null;
+        final Intent intent = new Intent(mContext.get(), AuthenticationActivity.class);
+        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(KEY_ACCOUNT_TYPE, accountType);
+        intent.putExtra(KEY_AUTH_TOKEN_LABEL, authTokenLabel);
+
+        final Bundle authToken = new Bundle();
+        authToken.putParcelable(KEY_INTENT, intent);
+
+        return authToken;
     }
 
     /**
@@ -64,7 +86,8 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
     public Bundle addAccountFromCredentials(AccountAuthenticatorResponse response,
                                             Account account,
                                             Bundle accountCredentials) throws NetworkErrorException {
-        return super.addAccountFromCredentials(response, account, accountCredentials);
+        throw new UnsupportedOperationException("Add account from credentials");
+
     }
 
     /**
@@ -74,7 +97,7 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
     public Bundle confirmCredentials(AccountAuthenticatorResponse response,
                                      Account account,
                                      Bundle options) throws NetworkErrorException {
-        return null;
+        throw new UnsupportedOperationException("Confirm credentials");
     }
 
     /**
@@ -82,7 +105,7 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
      */
     @Override
     public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
-        return null;
+        throw new UnsupportedOperationException("Edit properties");
     }
 
     public Task<Bundle> getAuthToken(Account account,
@@ -105,9 +128,22 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
                                Account account,
                                String authTokenType,
                                Bundle options) throws NetworkErrorException {
-        String customToken = mAccountManager.peekAuthToken(account, authTokenType);
-        mAuthenticator.signInWithCustomToken(mAccountManager.peekAuthToken(account, authTokenType));
-        return null;
+        // FIXME
+        // String customToken = mAccountManager.peekAuthToken(account, authTokenType);
+        // mAuthenticator.signInWithCustomToken(mAccountManager.peekAuthToken(account, authTokenType));
+
+        Log.e(LOG_TAG, "getAuthToken()");
+
+        final Intent intent = new Intent(mContext.get(), AuthenticationActivity.class);
+        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(KEY_ACCOUNT_NAME, account.name);
+        intent.putExtra(KEY_ACCOUNT_TYPE, account.type);
+        intent.putExtra(KEY_AUTH_TOKEN_LABEL, authTokenType);
+
+        final Bundle authToken = new Bundle();
+        authToken.putParcelable(KEY_INTENT, intent);
+
+        return authToken;
     }
 
     /**
@@ -117,7 +153,7 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
     public Bundle hasFeatures(AccountAuthenticatorResponse response,
                               Account account,
                               String[] features) throws NetworkErrorException {
-        return null;
+        throw new UnsupportedOperationException("Has features");
     }
 
     /**
@@ -125,7 +161,7 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
      */
     @Override
     public int hashCode() {
-        return super.hashCode();
+        throw new UnsupportedOperationException("Hash code");
     }
 
     /**
@@ -133,7 +169,7 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
      */
     @Override
     public String getAuthTokenLabel(String authTokenType) {
-        return null;
+        throw new UnsupportedOperationException("Get auth token label");
     }
 
     /**
@@ -144,7 +180,7 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
                                     Account account,
                                     String authTokenType,
                                     Bundle options) throws NetworkErrorException {
-        return null;
+        throw new UnsupportedOperationException("Update credentials");
     }
 
     private class AssembleAuthTokenTask implements Continuation<GetTokenResult, Bundle> {

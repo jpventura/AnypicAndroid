@@ -60,6 +60,11 @@ import com.jpventura.anypic.R;
 import com.jpventura.anypic.TaskObserver;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
+import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
+import static android.accounts.AccountManager.KEY_ERROR_MESSAGE;
+import static android.accounts.AccountManager.KEY_PASSWORD;
+import static android.accounts.AccountManager.KEY_USERDATA;
 
 /**
  * A login screen that offers login via email/password.
@@ -487,16 +492,27 @@ public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity
     }
 
     private final TaskObserver<Account> mObserver = new TaskObserver<Account>() {
+        final Bundle bundle = new Bundle();
 
         @Override
         public void onFailure(@NonNull Exception e) {
             Toast.makeText(AuthenticationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            bundle.putString(KEY_ERROR_MESSAGE, e.getMessage());
+            setAccountAuthenticatorResult(bundle);
             showProgress(false);
         }
 
         @Override
         public void onSuccess(Account account) {
             showProgress(false);
+
+
+            // final String name = authData.getString(KEY_USERDATA);
+            // final String password = authData.getString(KEY_PASSWORD);
+
+            bundle.putString(KEY_ACCOUNT_NAME, account.name);
+            bundle.putString(KEY_ACCOUNT_TYPE, account.type);
+            setAccountAuthenticatorResult(bundle);
 
             mEmailView.setText(account.name);
             Toast.makeText(AuthenticationActivity.this, account.toString(), Toast.LENGTH_LONG).show();

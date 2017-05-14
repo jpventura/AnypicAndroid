@@ -20,6 +20,7 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 /**
  * Base class for implementing an Activity that is used to help implement an
@@ -77,6 +78,8 @@ public abstract class AbstractAccountAuthenticatorActivity extends AppCompatActi
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        Log.e("ventura", "AbstractAuthenticatorActivity.onCreate");
+
         mAccountAuthenticatorResponse = getAccountAuthenticatorResponse();
 
         if (mAccountAuthenticatorResponse != null) {
@@ -85,6 +88,7 @@ public abstract class AbstractAccountAuthenticatorActivity extends AppCompatActi
     }
 
     private AccountAuthenticatorResponse getAccountAuthenticatorResponse() {
+        Log.e("ventura", "AbstractAuthenticatorActivity.getAccountAuthenticatorResponse()");
         return getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
     }
 
