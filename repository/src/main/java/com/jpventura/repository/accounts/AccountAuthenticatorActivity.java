@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic.authentication;
+package com.jpventura.repository.accounts;
 
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+
+import static android.accounts.AccountManager.ERROR_CODE_CANCELED;
+import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
 
 /**
  * Base class for implementing an Activity that is used to help implement an
@@ -36,12 +39,12 @@ import android.util.Log;
  * is never set or if it is set to null then error {@link AccountManager#ERROR_CODE_CANCELED}
  * will be called on the response.
  */
-public abstract class AbstractAccountAuthenticatorActivity extends AppCompatActivity {
+public abstract class AccountAuthenticatorActivity extends AppCompatActivity {
 
-    private AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
+    private static final String ERROR_MESSAGE_CANCELED = "Canceled";
 
-    // FIXME: Isso tem cara de ser task
-    private Bundle mResultBundle = null;
+    private AccountAuthenticatorResponse mCallback;
+    private Bundle mResult;
 
     /**
      * Set the result that is to be sent as the result of the request that caused this
@@ -49,23 +52,19 @@ public abstract class AbstractAccountAuthenticatorActivity extends AppCompatActi
      * the request will be canceled.
      * @param result this is returned as the result of the AbstractAccountAuthenticator request
      */
-    public final void setAccountAuthenticatorResult(Bundle result) {
-        mResultBundle = result;
+    public final void setAccountAuthenticatorResult(@Nullable Bundle result) {
+        mResult = result;
+        setResult(null == result ? RESULT_CANCELED : RESULT_OK);
     }
 
     /**
      * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
      */
-    public void finish() {
-        if (mAccountAuthenticatorResponse != null) {
-            // send the result bundle back if set, otherwise send an error.
-            if (mResultBundle != null) {
-                mAccountAuthenticatorResponse.onResult(mResultBundle);
-            } else {
-                mAccountAuthenticatorResponse.onError(AccountManager.ERROR_CODE_CANCELED,
-                        "canceled");
-            }
-            mAccountAuthenticatorResponse = null;
+    public final void finish() {
+        if (null == mResult) {
+            onRequestCanceled();
+        } else {
+            onRequestResult();
         }
         super.finish();
     }
@@ -75,22 +74,45 @@ public abstract class AbstractAccountAuthenticatorActivity extends AppCompatActi
      * icicle is non-zero.
      * @param icicle the save instance data of this Activity, may be null
      */
-    protected void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    @Override
+    public void onBackPressed() {
+        onRequestCanceled();
+        super.onBackPressed();
+    }
 
-        Log.e("ventura", "AbstractAuthenticatorActivity.onCreate");
+    /**
+     * Retrieves the AccountAuthenticatorResponse from either the intent of the
+     * savedInstanceState, if the savedInstanceState is non-zero.
+     * @param savedInstanceState the save instance data of this Activity, may be null
+     */
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCallback = getAccountAuthenticatorCallback();
+        onRequestContinued();
+    }
 
-        mAccountAuthenticatorResponse = getAccountAuthenticatorResponse();
+    private AccountAuthenticatorResponse getAccountAuthenticatorCallback() {
+        return getIntent().getParcelableExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+    }
 
-        if (mAccountAuthenticatorResponse != null) {
-            mAccountAuthenticatorResponse.onRequestContinued();
+    private void onRequestCanceled() {
+        if (null != mCallback) {
+            mCallback.onError(ERROR_CODE_CANCELED, ERROR_MESSAGE_CANCELED);
+            mCallback = null;
         }
     }
 
-    private AccountAuthenticatorResponse getAccountAuthenticatorResponse() {
-        Log.e("ventura", "AbstractAuthenticatorActivity.getAccountAuthenticatorResponse()");
-        return getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+    private void onRequestContinued() {
+        if (null != mCallback) {
+            mCallback.onRequestContinued();
+        }
+    }
+
+    private void onRequestResult() {
+        if (null != mCallback) {
+            mCallback.onResult(mResult);
+            mCallback = null;
+        }
     }
 
 }
-
