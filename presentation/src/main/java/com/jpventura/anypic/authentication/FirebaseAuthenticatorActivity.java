@@ -17,7 +17,6 @@
 package com.jpventura.anypic.authentication;
 
 import android.accounts.Account;
-import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorDescription;
 import android.animation.Animator;
@@ -25,8 +24,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
 import android.content.CursorLoader;
@@ -54,27 +53,24 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.jpventura.anypic.R;
 import com.jpventura.anypic.TaskObserver;
+import com.jpventura.repository.accounts.AccountAuthenticatorActivity;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_ERROR_MESSAGE;
-import static android.accounts.AccountManager.KEY_PASSWORD;
-import static android.accounts.AccountManager.KEY_USERDATA;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity implements LoaderCallbacks<Cursor>,
+public class AuthenticationActivity extends AccountAuthenticatorActivity implements LoaderCallbacks<Cursor>,
         AuthenticationContract.View {
 
     private static final String LOG_TAG = AuthenticationActivity.class.getSimpleName();
 
-    private AccountAuthenticatorActivity x;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -104,7 +100,7 @@ public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity
     private AuthenticationContract.Presenter mPresenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
         // Set up the login form.
@@ -495,11 +491,18 @@ public class AuthenticationActivity extends AbstractAccountAuthenticatorActivity
         final Bundle bundle = new Bundle();
 
         @Override
-        public void onFailure(@NonNull Exception e) {
-            Toast.makeText(AuthenticationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-            bundle.putString(KEY_ERROR_MESSAGE, e.getMessage());
+        public void onFailure(@NonNull Exception exception) {
+            Toast.makeText(AuthenticationActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            bundle.putString(KEY_ERROR_MESSAGE, exception.getLocalizedMessage());
             setAccountAuthenticatorResult(bundle);
+            Log.e("ventura", exception.toString());
+            Log.e("ventura", exception.getMessage());
+            Log.e("ventura", exception.getLocalizedMessage());
+            Log.e("ventura", exception.getClass().getCanonicalName());
+            Log.e("ventura", Boolean.toString(exception instanceof FirebaseAuthUserCollisionException));
+            exception.printStackTrace();
             showProgress(false);
+            finish();
         }
 
         @Override
