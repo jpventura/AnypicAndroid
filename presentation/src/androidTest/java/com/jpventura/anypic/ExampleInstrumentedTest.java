@@ -37,6 +37,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.jpventura.anypic", appContext.getPackageName());
+        assertEquals("com.jpventura.anypic.debug", appContext.getPackageName());
     }
 }
