@@ -17,6 +17,7 @@
 package com.jpventura.anypic.authentication;
 
 import android.accounts.Account;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.Task;
@@ -30,7 +31,7 @@ public class AuthenticationContract {
 
         Task<AuthResult> signIn(@NonNull String email, @NonNull String password);
 
-        Task<Account> signUp(@NonNull final String email, @NonNull final String password);
+        Task<Bundle> signUp(@NonNull final String email, @NonNull final String password);
 
     }
 

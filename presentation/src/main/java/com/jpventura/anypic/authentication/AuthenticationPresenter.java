@@ -19,6 +19,7 @@ package com.jpventura.anypic.authentication;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -36,7 +37,12 @@ import com.jpventura.anypic.authentication.AuthenticationContract.Presenter;
 
 import java.lang.ref.WeakReference;
 
+import static android.accounts.AccountManager.KEY_PASSWORD;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
+import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
+import static android.accounts.AccountManager.KEY_AUTHTOKEN;
+//import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 
 public class AuthenticationPresenter implements AuthStateListener, Presenter {
 
@@ -68,7 +74,7 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
     }
 
     @Override
-    public Task<Account> signUp(@NonNull final String email, @NonNull final String password) {
+    public Task<Bundle> signUp(@NonNull final String email, @NonNull final String password) {
         final Account account = new Account(email, "com.jpventura.anypic");
 
         return Tasks.<Void>forResult(null)
@@ -85,13 +91,14 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
     }
 
 
-    private class AddAccountExplicitlyTask implements Continuation<GetTokenResult, Task<Account>> {
+    private class AddAccountExplicitlyTask implements Continuation<GetTokenResult, Task<Bundle>> {
 
         private static final String ERROR_MESSAGE = "Failed to add account explicitly";
+        private final String TAG = AddAccountExplicitlyTask.class.getSimpleName();
 
         private final Account mAccount;
         private final String mPassword;
-        private final TaskCompletionSource<Account> mTaskCompletionSource;
+        private final TaskCompletionSource<Bundle> mTaskCompletionSource;
 
         AddAccountExplicitlyTask(@NonNull final Account account, @NonNull final String password) {
             mAccount = checkNotNull(account);
@@ -100,18 +107,24 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
         }
 
         @Override
-        public Task<Account> then(@NonNull Task<GetTokenResult> task) throws Exception {
-            Log.d(LOG_TAG, AddAccountExplicitlyTask.class.getSimpleName());
-
+        public Task<Bundle> then(@NonNull Task<GetTokenResult> task) throws Exception {
             final String authToken = task.getResult().getToken();
-
+            Log.d(TAG, "account : " + mAccount.toString());
+            Log.d(TAG, "password: " + mPassword);
+            Log.d(TAG, "token   : " + new String(authToken));
             if (mAccountManager.addAccountExplicitly(mAccount, mPassword, null)) {
-                // FIXME
-                mAccountManager.setAuthToken(mAccount, "tokentype", authToken);
+                final Bundle result = new Bundle();
+                result.putString(KEY_ACCOUNT_NAME, mAccount.name);
+                result.putString(KEY_ACCOUNT_TYPE, mAccount.type);
+                result.putString(KEY_AUTHTOKEN, authToken);
+                result.putString(KEY_PASSWORD, mPassword);
+                mAccountManager.setAuthToken(mAccount, "com.jpventura.anypic", authToken);
                 mAccountManager.setPassword(mAccount, mPassword);
 
-                mTaskCompletionSource.setResult(mAccount);
+                Log.e(TAG, "consegui adicionar a conta " + result.toString());
+                mTaskCompletionSource.setResult(result);
             } else {
+                Log.e(TAG, "nao consegui adicionar a conta");
                 mTaskCompletionSource.setException(new AuthenticatorException(ERROR_MESSAGE));
             }
 
