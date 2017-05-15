@@ -17,8 +17,15 @@
 package com.jpventura.anypic.home;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -28,10 +35,18 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.jpventura.anypic.R;
 import com.jpventura.anypic.authentication.AuthenticatorActivity;
+
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity implements HomeContract.View {
 
@@ -74,21 +89,129 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
         findViewById(R.id.token).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.getAuthToken(new Account("maria@email.com", "com.jpventura.anypic"))
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                Log.e(LOG_TAG, e.getMessage());
-                            }
-                        })
-                        .addOnSuccessListener(new OnSuccessListener<Bundle>() {
-                            @Override
-                            public void onSuccess(Bundle bundle) {
-                                Toast.makeText(getApplicationContext(), bundle.toString(), Toast.LENGTH_LONG).show();
-                                Log.d(LOG_TAG, bundle.toString());
-                            }
-                        });
+//                mPresenter.getAuthToken(new Account("maria@email.com", "com.jpventura.anypic"))
+//                        .addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+//                                Log.e(LOG_TAG, e.getMessage());
+//                            }
+//                        })
+//                        .addOnSuccessListener(new OnSuccessListener<Bundle>() {
+//                            @Override
+//                            public void onSuccess(Bundle bundle) {
+//                                Toast.makeText(getApplicationContext(), bundle.toString(), Toast.LENGTH_LONG).show();
+//                                Log.d(LOG_TAG, bundle.toString());
+//                            }
+//                        });
+
+
+AccountManager manager = AccountManager.get(getApplicationContext());
+
+                final Account account = new Account("ma10@smartmei.com", "com.jpventura.anypic");
+                final String authTokenType = "com.jpventura.anypic";
+                final Boolean notifyAuthFailure = true;
+
+                manager.setAuthToken(account, "com.jpventura.anypic", "banana123");
+
+                Log.e(LOG_TAG, "peek token " + account.toString());
+                Log.e(LOG_TAG, "peek token " + manager.peekAuthToken(account, "com.jpventura.anypic"));
+//
+//
+//                Runnable runnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            Bundle result = AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, null, null).getResult();
+//                            result = (null == result ? new Bundle() : result);
+//                            Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
+//                        } catch (InterruptedIOException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (OperationCanceledException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (IOException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (AuthenticatorException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        }
+//
+//                    }
+//                };
+//
+//                AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, new AccountManagerCallback<Bundle>() {
+//                    @Override
+//                    public void run(AccountManagerFuture<Bundle> future) {
+//                        Log.e(LOG_TAG, "blocking token AccountManagerFuture" + account.toString());
+//
+//                        try {
+//                            int i = 0;
+//                            while (!future.isDone()) {
+//                                Log.d("ventura", "busy waiting " + Integer.toString(i++));
+//                            }
+//
+//                            Bundle result = future.getResult();
+//                            result = (null == result ? new Bundle() : result);
+//                            Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
+//                        } catch (InterruptedIOException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (OperationCanceledException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (IOException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (AuthenticatorException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        }
+//                    }
+//                }, null);
+
+              //  new Thread(runnable).start();
+
+//                Runnable runnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Log.e(LOG_TAG, "blocking token Runnable" + account.toString());
+//
+//
+//                            // String token = AccountManager.get(getApplicationContext()).blockingGetAuthToken(account, authTokenType, notifyAuthFailure);
+//                            AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, new AccountManagerCallback<Bundle>() {
+//                                @Override
+//                                public void run(AccountManagerFuture<Bundle> future) {
+//                                    Log.e(LOG_TAG, "blocking token AccountManagerFuture" + account.toString());
+//
+//                                    try {
+//                                        Bundle result = future.getResult();
+//                                        result = (null == result ? new Bundle() : result);
+//                                        Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
+//                                    } catch (InterruptedIOException e) {
+//                                        Log.e(LOG_TAG, e.getMessage());
+//                                    } catch (OperationCanceledException e) {
+//                                        Log.e(LOG_TAG, e.getMessage());
+//                                    } catch (IOException e) {
+//                                        Log.e(LOG_TAG, e.getMessage());
+//                                    } catch (AuthenticatorException e) {
+//                                        Log.e(LOG_TAG, e.getMessage());
+//                                    }
+//                                }
+//                            }, new Handler(getMainLooper()));
+//                    }
+//
+//                };
+//
+//                new  Thread(runnable).start();
+
+//                Tasks.call(AsyncTask.SERIAL_EXECUTOR, callable)
+//                        .addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.e(LOG_TAG, "onFailure(" + e.getMessage() + ")");
+//                            }
+//                        })
+//                        .addOnSuccessListener(new OnSuccessListener<String>() {
+//                            @Override
+//                            public void onSuccess(String authToken) {
+//                                Log.d(LOG_TAG, "onSuccess(" + authToken + ")");
+//                            }
+//                        });
             }
         });
 

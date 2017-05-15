@@ -109,17 +109,22 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
         @Override
         public Task<Bundle> then(@NonNull Task<GetTokenResult> task) throws Exception {
             final String authToken = task.getResult().getToken();
-            Log.d(TAG, "account : " + mAccount.toString());
-            Log.d(TAG, "password: " + mPassword);
-            Log.d(TAG, "token   : " + new String(authToken));
+            Log.d(TAG, "account      : " + mAccount.toString());
+            Log.d(TAG, "password     : " + mPassword);
+            Log.d(TAG, "token        : " + new String(authToken));
+
             if (mAccountManager.addAccountExplicitly(mAccount, mPassword, null)) {
                 final Bundle result = new Bundle();
                 result.putString(KEY_ACCOUNT_NAME, mAccount.name);
                 result.putString(KEY_ACCOUNT_TYPE, mAccount.type);
                 result.putString(KEY_AUTHTOKEN, authToken);
                 result.putString(KEY_PASSWORD, mPassword);
+
                 mAccountManager.setAuthToken(mAccount, "com.jpventura.anypic", authToken);
                 mAccountManager.setPassword(mAccount, mPassword);
+
+                Log.d(TAG, "peek token   : " + mAccountManager.peekAuthToken(mAccount, "com.jpventura.anypic"));
+                Log.d(TAG, "password     : " + mAccountManager.getPassword(mAccount));
 
                 Log.e(TAG, "consegui adicionar a conta " + result.toString());
                 mTaskCompletionSource.setResult(result);

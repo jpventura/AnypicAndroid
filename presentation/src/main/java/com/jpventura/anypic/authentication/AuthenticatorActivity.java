@@ -495,12 +495,15 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity implemen
             Toast.makeText(AuthenticatorActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             bundle.putString(KEY_ERROR_MESSAGE, exception.getLocalizedMessage());
             setAccountAuthenticatorResult(bundle);
+
             Log.e("ventura", exception.toString());
             Log.e("ventura", exception.getMessage());
             Log.e("ventura", exception.getLocalizedMessage());
             Log.e("ventura", exception.getClass().getCanonicalName());
             Log.e("ventura", Boolean.toString(exception instanceof FirebaseAuthUserCollisionException));
+
             exception.printStackTrace();
+
             showProgress(false);
             finish();
         }
@@ -509,13 +512,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity implemen
         public void onSuccess(Bundle result) {
             showProgress(false);
 
+            Log.e(LOG_TAG, result.toString());
+            Toast.makeText(AuthenticatorActivity.this, result.toString(), Toast.LENGTH_LONG).show();
 
-            // final String name = authData.getString(KEY_USERDATA);
-            // final String password = authData.getString(KEY_PASSWORD);
-            setAccountAuthenticatorResult(bundle);
-            String name = bundle.getString(KEY_ACCOUNT_NAME, "deu pau");
-            mEmailView.setText(name);
-            Toast.makeText(AuthenticatorActivity.this, name, Toast.LENGTH_LONG).show();
+            setAccountAuthenticatorResult(result);
+//
+//            // final String name = authData.getString(KEY_USERDATA);
+//            // final String password = authData.getString(KEY_PASSWORD);
+//            setAccountAuthenticatorResult(bundle);
+//            String name = bundle.getString(KEY_ACCOUNT_NAME, "deu pau");
+//            mEmailView.setText(name);
+//            Toast.makeText(AuthenticatorActivity.this, name, Toast.LENGTH_LONG).show();
             finish();
         }
 

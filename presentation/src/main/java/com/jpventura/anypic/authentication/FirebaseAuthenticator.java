@@ -13,9 +13,16 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -48,34 +55,60 @@ public class FirebaseAuthenticator {
         mManager = AccountManager.get(context);
     }
 
+    private class GetAuthTokenTask implements Continuation<AuthResult, Task<GetTokenResult>> {
+
+        private final boolean mForceRefresh;
+
+        GetAuthTokenTask(final boolean forceRefresh) {
+            mForceRefresh = forceRefresh;
+        }
+
+        @Override
+        public Task<GetTokenResult> then(@NonNull Task<AuthResult> task) throws Exception {
+            return task.getResult().getUser().getToken(mForceRefresh);
+        }
+
+    }
+
     public Task<Bundle> getAuthToken(@NonNull final Account account,
                                      @NonNull String authTokenType,
                                      @Nullable Bundle options,
                                      @NonNull Activity activity) {
-        final TaskCompletionSource<Bundle> tcs = new TaskCompletionSource<>();
 
-        final Handler handler = new Handler(activity.getMainLooper());
+        String authToken = mManager.peekAuthToken(account, authTokenType);
 
-        final AccountManagerCallback<Bundle> callback = new AccountManagerCallback<Bundle>() {
 
-            @Override
-            public void run(AccountManagerFuture<Bundle> future) {
-                try {
-                    tcs.setResult(future.getResult());
-                } catch (AuthenticatorException e) {
-                    tcs.setException(e);
-                } catch (IOException e) {
-                    tcs.setException(e);
-                } catch (OperationCanceledException e) {
-                    tcs.setException(e);
-                }
-            }
+        Log.d(LOG_TAG, "getAuthToken");
 
-        };
+        Bundle result = new Bundle();
+        result.putString(AccountManager.KEY_AUTHTOKEN, "circular");
 
-        mManager.getAuthToken(account, authTokenType, options, activity, callback, handler);
+        return Tasks.forResult(result);
 
-        return tcs.getTask();
+//        final TaskCompletionSource<Bundle> tcs = new TaskCompletionSource<>();
+//
+//        final Handler handler = new Handler(activity.getMainLooper());
+//
+//        final AccountManagerCallback<Bundle> callback = new AccountManagerCallback<Bundle>() {
+//
+//            @Override
+//            public void run(AccountManagerFuture<Bundle> future) {
+//                try {
+//                    tcs.setResult(future.getResult());
+//                } catch (AuthenticatorException e) {
+//                    tcs.setException(e);
+//                } catch (IOException e) {
+//                    tcs.setException(e);
+//                } catch (OperationCanceledException e) {
+//                    tcs.setException(e);
+//                }
+//            }
+//
+//        };
+//
+//        mManager.getAuthToken(account, authTokenType, options, activity, callback, handler);
+
+//        return tcs.getTask();
     }
 
 }
