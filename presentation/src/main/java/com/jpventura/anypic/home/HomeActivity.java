@@ -16,23 +16,30 @@
 
 package com.jpventura.anypic.home;
 
-import android.app.Activity;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.jpventura.anypic.R;
 import com.jpventura.anypic.authentication.FirebaseAuthenticatorActivity;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements HomeContract.View {
+
+    private static final String LOG_TAG = HomeActivity.class.getSimpleName();
 
     private TextView mTextMessage;
-Activity x;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -63,6 +70,30 @@ Activity x;
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        setPresenter(new HomePresenter(this));
+
+        findViewById(R.id.token).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.getAuthToken(new Account("maria@email.com", "com.jpventura.anypic"))
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                Log.e(LOG_TAG, e.getMessage());
+                            }
+                        })
+                        .addOnSuccessListener(new OnSuccessListener<Bundle>() {
+                            @Override
+                            public void onSuccess(Bundle bundle) {
+                                Toast.makeText(getApplicationContext(), bundle.toString(), Toast.LENGTH_LONG).show();
+                                Log.d(LOG_TAG, bundle.toString());
+                            }
+                        });
+            }
+        });
+
+
         findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,5 +101,12 @@ Activity x;
             }
         });
     }
+
+    @Override
+    public void setPresenter(HomeContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    private HomeContract.Presenter mPresenter;
 
 }

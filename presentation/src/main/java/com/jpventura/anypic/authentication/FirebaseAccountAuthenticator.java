@@ -23,18 +23,25 @@ import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GetTokenResult;
+import com.jpventura.util.accounts.GetAuthTokenCallable;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
@@ -68,6 +75,8 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
                              String authTokenLabel,
                              String[] requiredFeatures,
                              Bundle options) throws NetworkErrorException {
+        Log.d(LOG_TAG, "addAccount");
+
         final Intent intent = new Intent(mContext.get(), FirebaseAuthenticatorActivity.class);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(KEY_ACCOUNT_TYPE, accountType);
@@ -108,42 +117,81 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
         throw new UnsupportedOperationException("Edit properties");
     }
 
-    public Task<Bundle> getAuthToken(Account account,
-                                     String authTokenType,
-                                     Bundle options) throws NetworkErrorException {
-
-        final String customToken = mAccountManager.peekAuthToken(account, authTokenType);
-
-        return mAuthenticator.signInWithCustomToken(customToken)
-                .continueWithTask(new GetFirebaseTokenTask(true))
-                .continueWith(new AssembleAuthTokenTask());
-    }
-
     /**
      * {@inheritDoc}
      */
     @WorkerThread
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response,
-                               Account account,
+                               final Account account,
                                String authTokenType,
                                Bundle options) throws NetworkErrorException {
-        // FIXME
-        // String customToken = mAccountManager.peekAuthToken(account, authTokenType);
-        // mAuthenticator.signInWithCustomToken(mAccountManager.peekAuthToken(account, authTokenType));
+        Log.e(LOG_TAG, "getAuthToken(" + account.toString() + ", " + authTokenType + ")");
 
-        Log.e(LOG_TAG, "getAuthToken()");
+        for (Account c : mAccountManager.getAccounts()) {
+            if (!c.equals(account)) continue;
+            Log.w(LOG_TAG, "... account: " + c.toString() + " ?= " + Boolean.toString(c.equals(account)));
+        }
 
-        final Intent intent = new Intent(mContext.get(), FirebaseAuthenticatorActivity.class);
-        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-        intent.putExtra(KEY_ACCOUNT_NAME, account.name);
-        intent.putExtra(KEY_ACCOUNT_TYPE, account.type);
-        intent.putExtra(KEY_AUTH_TOKEN_LABEL, authTokenType);
+        Callable<Bundle> callable = new GetAuthTokenCallable(account, authTokenType, options, mContext.get());
+        try {
+            return Tasks.await(Tasks.call(AsyncTask.THREAD_POOL_EXECUTOR, callable)
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(LOG_TAG, "ventura.onFailure " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    })
+                    .addOnSuccessListener(new OnSuccessListener<Bundle>() {
+                        @Override
+                        public void onSuccess(Bundle bundle) {
+                            Log.d(LOG_TAG, "ventura.onSuccess " + bundle.toString());
+                        }
+                    }));
+        } catch (ExecutionException e) {
+            throw new NetworkErrorException(e);
+        } catch (InterruptedException e) {
+            throw new NetworkErrorException(e);
+        }
 
-        final Bundle authToken = new Bundle();
-        authToken.putParcelable(KEY_INTENT, intent);
-
-        return authToken;
+//        try {
+//            final String customToken = mAccountManager.peekAuthToken(account, authTokenType);
+//            Tasks.await(mAuthenticator.signInWithCustomToken(customToken)
+//                    .continueWithTask(new Continuation<AuthResult, Task<GetTokenResult>>() {
+//                        @Override
+//                        public Task<GetTokenResult> then(@NonNull Task<AuthResult> task) throws Exception {
+//                            return task.getResult().getUser().getToken(true);
+//                        }
+//                    })
+//                    .continueWith(new Continuation<GetTokenResult, Bundle>() {
+//                        @Override
+//                        public Bundle then(@NonNull Task<GetTokenResult> task) throws Exception {
+//                            final String token = task.getResult().getToken();
+//                            Log.e(LOG_TAG, "(" + account.toString() + ", " + (null == token ? "null" : token) + ")");
+//                            final Bundle result = new Bundle();
+//                            result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+//                            result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+//                            result.putString(AccountManager.KEY_AUTHTOKEN, token);
+//
+//                            return result;
+//                        }
+//                    }));
+//        } catch (Exception e) {
+//            Log.e("ventura", "deu pau pra reautenticar " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//
+//        final Intent intent = new Intent(mContext.get(), FirebaseAuthenticatorActivity.class);
+//        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+//        intent.putExtra(KEY_ACCOUNT_NAME, account.name);
+//        intent.putExtra(KEY_ACCOUNT_TYPE, account.type);
+//        intent.putExtra(KEY_AUTH_TOKEN_LABEL, authTokenType);
+//
+//        final Bundle authToken = new Bundle();
+//        authToken.putParcelable(KEY_INTENT, intent);
+//
+//        return authToken;
     }
 
     /**
@@ -195,7 +243,6 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
             result.putString(AccountManager.KEY_ACCOUNT_NAME, accountName);
             result.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
             result.putString(AccountManager.KEY_AUTHTOKEN, task.getResult().getToken());
-            result.putString(AccountManager.KEY_AUTH_TOKEN_LABEL, authTokenType);
 
             return result;
         }

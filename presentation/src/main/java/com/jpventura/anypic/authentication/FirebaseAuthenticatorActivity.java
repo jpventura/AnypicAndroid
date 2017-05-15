@@ -488,7 +488,7 @@ public class FirebaseAuthenticatorActivity extends AccountAuthenticatorActivity 
         }
     }
 
-    private final TaskObserver<Account> mObserver = new TaskObserver<Account>() {
+    private final TaskObserver<Bundle> mObserver = new TaskObserver<Bundle>() {
         final Bundle bundle = new Bundle();
 
         @Override
@@ -507,19 +507,16 @@ public class FirebaseAuthenticatorActivity extends AccountAuthenticatorActivity 
         }
 
         @Override
-        public void onSuccess(Account account) {
+        public void onSuccess(Bundle result) {
             showProgress(false);
 
 
             // final String name = authData.getString(KEY_USERDATA);
             // final String password = authData.getString(KEY_PASSWORD);
-
-            bundle.putString(KEY_ACCOUNT_NAME, account.name);
-            bundle.putString(KEY_ACCOUNT_TYPE, account.type);
             setAccountAuthenticatorResult(bundle);
-
-            mEmailView.setText(account.name);
-            Toast.makeText(FirebaseAuthenticatorActivity.this, account.toString(), Toast.LENGTH_LONG).show();
+            String name = bundle.getString(KEY_ACCOUNT_NAME, "deu pau");
+            mEmailView.setText(name);
+            Toast.makeText(FirebaseAuthenticatorActivity.this, name, Toast.LENGTH_LONG).show();
             finish();
         }
 
