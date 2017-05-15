@@ -62,6 +62,7 @@ dependencies {
     compile "com.google.guava:guava:$rootProject.guavaVersion"
     compile 'com.jakewharton:butterknife:8.5.1'
     compile project(':repository')
+    compile project(':util')
     compile fileTree(dir: "libs", include: ["*.jar"])
 
     debugCompile 'com.facebook.stetho:stetho:1.5.0'

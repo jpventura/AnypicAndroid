@@ -16,4 +16,5 @@
 -->
 <resources>
     <string name="app_name">Repository</string>
+    <string name="error_authenticator_canceled">Operation canceled by user</string>
 </resources>

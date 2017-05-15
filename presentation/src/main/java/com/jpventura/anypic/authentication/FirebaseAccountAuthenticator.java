@@ -68,7 +68,7 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
                              String authTokenLabel,
                              String[] requiredFeatures,
                              Bundle options) throws NetworkErrorException {
-        final Intent intent = new Intent(mContext.get(), AuthenticationActivity.class);
+        final Intent intent = new Intent(mContext.get(), FirebaseAuthenticatorActivity.class);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(KEY_ACCOUNT_TYPE, accountType);
         intent.putExtra(KEY_AUTH_TOKEN_LABEL, authTokenLabel);
@@ -134,7 +134,7 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
 
         Log.e(LOG_TAG, "getAuthToken()");
 
-        final Intent intent = new Intent(mContext.get(), AuthenticationActivity.class);
+        final Intent intent = new Intent(mContext.get(), FirebaseAuthenticatorActivity.class);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(KEY_ACCOUNT_NAME, account.name);
         intent.putExtra(KEY_ACCOUNT_TYPE, account.type);
