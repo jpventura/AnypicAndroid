@@ -50,9 +50,9 @@ public class AuthenticationPresenter implements AuthStateListener, Presenter {
 
     private final AccountManager mAccountManager;
     private final FirebaseAuth mAuth;
-    private WeakReference<FirebaseAuthenticatorActivity> mActivity;
+    private WeakReference<AuthenticatorActivity> mActivity;
 
-    AuthenticationPresenter(FirebaseAuthenticatorActivity activity) {
+    AuthenticationPresenter(AuthenticatorActivity activity) {
         mAccountManager = AccountManager.get(activity);
         mActivity = new WeakReference<>(activity);
         mAuth = FirebaseAuth.getInstance();

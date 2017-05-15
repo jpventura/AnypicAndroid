@@ -60,17 +60,16 @@ import com.jpventura.util.accounts.AccountAuthenticatorActivity;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
-import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_ERROR_MESSAGE;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class FirebaseAuthenticatorActivity extends AccountAuthenticatorActivity implements LoaderCallbacks<Cursor>,
+public class AuthenticatorActivity extends AccountAuthenticatorActivity implements LoaderCallbacks<Cursor>,
 
         AuthenticationContract.View {
 
-    private static final String LOG_TAG = FirebaseAuthenticatorActivity.class.getSimpleName();
+    private static final String LOG_TAG = AuthenticatorActivity.class.getSimpleName();
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -414,7 +413,7 @@ public class FirebaseAuthenticatorActivity extends AccountAuthenticatorActivity 
         Log.d(LOG_TAG, "addEmailsToAutoComplete");
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(FirebaseAuthenticatorActivity.this,
+                new ArrayAdapter<>(AuthenticatorActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
@@ -493,7 +492,7 @@ public class FirebaseAuthenticatorActivity extends AccountAuthenticatorActivity 
 
         @Override
         public void onFailure(@NonNull Exception exception) {
-            Toast.makeText(FirebaseAuthenticatorActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(AuthenticatorActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             bundle.putString(KEY_ERROR_MESSAGE, exception.getLocalizedMessage());
             setAccountAuthenticatorResult(bundle);
             Log.e("ventura", exception.toString());
@@ -516,7 +515,7 @@ public class FirebaseAuthenticatorActivity extends AccountAuthenticatorActivity 
             setAccountAuthenticatorResult(bundle);
             String name = bundle.getString(KEY_ACCOUNT_NAME, "deu pau");
             mEmailView.setText(name);
-            Toast.makeText(FirebaseAuthenticatorActivity.this, name, Toast.LENGTH_LONG).show();
+            Toast.makeText(AuthenticatorActivity.this, name, Toast.LENGTH_LONG).show();
             finish();
         }
 

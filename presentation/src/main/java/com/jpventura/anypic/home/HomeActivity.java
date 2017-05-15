@@ -17,7 +17,6 @@
 package com.jpventura.anypic.home;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,7 +31,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.jpventura.anypic.R;
-import com.jpventura.anypic.authentication.FirebaseAuthenticatorActivity;
+import com.jpventura.anypic.authentication.AuthenticatorActivity;
 
 public class HomeActivity extends AppCompatActivity implements HomeContract.View {
 
@@ -97,7 +96,7 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
         findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, FirebaseAuthenticatorActivity.class));
+                startActivity(new Intent(HomeActivity.this, AuthenticatorActivity.class));
             }
         });
     }

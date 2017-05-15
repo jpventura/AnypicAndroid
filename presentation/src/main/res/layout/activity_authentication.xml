@@ -24,7 +24,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
 
-    tools:context=".authentication.FirebaseAuthenticatorActivity">
+    tools:context=".authentication.AuthenticatorActivity">
 
     <!-- Login progress -->
     <ProgressBar

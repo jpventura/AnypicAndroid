@@ -44,7 +44,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
-import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTH_TOKEN_LABEL;
 import static android.accounts.AccountManager.KEY_INTENT;
@@ -77,7 +76,7 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
                              Bundle options) throws NetworkErrorException {
         Log.d(LOG_TAG, "addAccount");
 
-        final Intent intent = new Intent(mContext.get(), FirebaseAuthenticatorActivity.class);
+        final Intent intent = new Intent(mContext.get(), AuthenticatorActivity.class);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(KEY_ACCOUNT_TYPE, accountType);
         intent.putExtra(KEY_AUTH_TOKEN_LABEL, authTokenLabel);
@@ -182,7 +181,7 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
 //            e.printStackTrace();
 //        }
 //
-//        final Intent intent = new Intent(mContext.get(), FirebaseAuthenticatorActivity.class);
+//        final Intent intent = new Intent(mContext.get(), AuthenticatorActivity.class);
 //        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 //        intent.putExtra(KEY_ACCOUNT_NAME, account.name);
 //        intent.putExtra(KEY_ACCOUNT_TYPE, account.type);

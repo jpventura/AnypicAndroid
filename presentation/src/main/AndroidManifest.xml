@@ -30,7 +30,7 @@
         </activity>
 
         <activity
-            android:name=".authentication.FirebaseAuthenticatorActivity"
+            android:name=".authentication.AuthenticatorActivity"
             android:label="@string/title_activity_authentication"
             android:theme="@style/Theme.Anypic.NoActionBar"/>
 
