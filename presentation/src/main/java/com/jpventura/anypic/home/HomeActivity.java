@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -106,16 +107,23 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 //                        });
 
 
-AccountManager manager = AccountManager.get(getApplicationContext());
+                AccountManager manager = AccountManager.get(getApplicationContext());
 
-                final Account account = new Account("ma10@smartmei.com", "com.jpventura.anypic");
+
+                final Account account = manager.getAccounts()[0];
                 final String authTokenType = "com.jpventura.anypic";
                 final Boolean notifyAuthFailure = true;
 
+                String token = manager.peekAuthToken(account, authTokenType);
+                if (TextUtils.isEmpty(token)) {
+                    token = "vazio";
+                }
+
+                Log.e(LOG_TAG, "1. peek token " + token);
                 manager.setAuthToken(account, "com.jpventura.anypic", "banana123");
 
-                Log.e(LOG_TAG, "peek token " + account.toString());
-                Log.e(LOG_TAG, "peek token " + manager.peekAuthToken(account, "com.jpventura.anypic"));
+                token = manager.peekAuthToken(account, authTokenType);
+                Log.e(LOG_TAG, "2. peek token " + token);
 //
 //
 //                Runnable runnable = new Runnable() {
@@ -138,31 +146,34 @@ AccountManager manager = AccountManager.get(getApplicationContext());
 //                    }
 //                };
 //
-//                AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, new AccountManagerCallback<Bundle>() {
-//                    @Override
-//                    public void run(AccountManagerFuture<Bundle> future) {
-//                        Log.e(LOG_TAG, "blocking token AccountManagerFuture" + account.toString());
-//
-//                        try {
-//                            int i = 0;
-//                            while (!future.isDone()) {
-//                                Log.d("ventura", "busy waiting " + Integer.toString(i++));
-//                            }
-//
-//                            Bundle result = future.getResult();
-//                            result = (null == result ? new Bundle() : result);
-//                            Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
-//                        } catch (InterruptedIOException e) {
-//                            Log.e(LOG_TAG, e.getMessage());
-//                        } catch (OperationCanceledException e) {
-//                            Log.e(LOG_TAG, e.getMessage());
-//                        } catch (IOException e) {
-//                            Log.e(LOG_TAG, e.getMessage());
-//                        } catch (AuthenticatorException e) {
-//                            Log.e(LOG_TAG, e.getMessage());
-//                        }
-//                    }
-//                }, null);
+                AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, new AccountManagerCallback<Bundle>() {
+                    @Override
+                    public void run(AccountManagerFuture<Bundle> future) {
+                        Log.e(LOG_TAG, "blocking token AccountManagerFuture" + account.toString());
+
+                        try {
+                            int i = 0;
+                            while (!future.isDone()) {
+                                Log.d("ventura", "busy waiting " + Integer.toString(i++));
+                            }
+
+                            Bundle result = future.getResult();
+                            result = (null == result ? new Bundle() : result);
+                            Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
+                        } catch (InterruptedIOException e) {
+                            Log.e(LOG_TAG, e.getMessage());
+                        } catch (OperationCanceledException e) {
+                            Log.e(LOG_TAG, e.getMessage());
+                        } catch (IOException e) {
+                            Log.e(LOG_TAG, e.getMessage());
+                        } catch (AuthenticatorException e) {
+
+
+
+                            Log.e(LOG_TAG, e.getMessage());
+                        }
+                    }
+                }, null);
 
               //  new Thread(runnable).start();
 

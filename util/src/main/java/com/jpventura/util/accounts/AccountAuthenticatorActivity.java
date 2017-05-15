@@ -54,7 +54,7 @@ public abstract class AccountAuthenticatorActivity extends AppCompatActivity {
      */
     public final void setAccountAuthenticatorResult(@Nullable Bundle result) {
         mResult = result;
-        setResult(null == result ? RESULT_CANCELED : RESULT_OK);
+        setResult(null == result ? RESULT_CANCELED : RESULT_OK, getIntent());
     }
 
     /**
@@ -70,9 +70,7 @@ public abstract class AccountAuthenticatorActivity extends AppCompatActivity {
     }
 
     /**
-     * Retreives the AccountAuthenticatorResponse from either the intent of the icicle, if the
-     * icicle is non-zero.
-     * @param icicle the save instance data of this Activity, may be null
+     * @{inheritDoc}
      */
     @Override
     public void onBackPressed() {
