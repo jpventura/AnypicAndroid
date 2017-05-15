@@ -78,11 +78,6 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
                              String[] requiredFeatures,
                              Bundle options) throws NetworkErrorException {
         Log.d(LOG_TAG, "addAccount");
-        Log.d(LOG_TAG, "addAccount");
-        Log.d(LOG_TAG, "addAccount");
-        Log.d(LOG_TAG, "addAccount");
-        Log.d(LOG_TAG, "addAccount");
-        Log.d(LOG_TAG, "addAccount");
 
         final Intent intent = new Intent(mContext.get(), AuthenticatorActivity.class);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
@@ -147,101 +142,8 @@ class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
         }
 
         Log.e(LOG_TAG, "deveria retornar " + result.toString());
-//        try {
-//            return Tasks.await(mAuthenticator.getCurrentUser().getToken(true)
-//                    .continueWith(new Continuation<GetTokenResult, Bundle>() {
-//                        @Override
-//                        public Bundle then(@NonNull Task<GetTokenResult> task) throws Exception {
-//                            result.putString(KEY_AUTHTOKEN, task.getResult().getToken());
-//
-//                            if (null != response) {
-//                                response.onResult(result);
-//                            }
-//
-//                            return result;
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            result.clear();
-//                            result.putString(KEY_ERROR_MESSAGE, e.getMessage());
-//                        }
-//                    }));
-//        } catch (ExecutionException e) {
-//            throw new NetworkErrorException(e);
-//        } catch (InterruptedException e) {
-//            throw new NetworkErrorException(e);
-//        }
-
-
-
 
         return result;
-//        for (Account c : mAccountManager.getAccounts()) {
-//            if (!c.equals(account)) continue;
-//            Log.w(LOG_TAG, "... account: " + c.toString() + " ?= " + Boolean.toString(c.equals(account)));
-//        }
-//
-//        Callable<Bundle> callable = new GetAuthTokenCallable(account, authTokenType, options, mContext.get());
-//        try {
-//            return Tasks.await(Tasks.call(AsyncTask.THREAD_POOL_EXECUTOR, callable)
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            Log.e(LOG_TAG, "ventura.onFailure " + e.getMessage());
-//                            e.printStackTrace();
-//                        }
-//                    })
-//                    .addOnSuccessListener(new OnSuccessListener<Bundle>() {
-//                        @Override
-//                        public void onSuccess(Bundle bundle) {
-//                            Log.d(LOG_TAG, "ventura.onSuccess " + bundle.toString());
-//                        }
-//                    }));
-//        } catch (ExecutionException e) {
-//            throw new NetworkErrorException(e);
-//        } catch (InterruptedException e) {
-//            throw new NetworkErrorException(e);
-//        }
-
-//        try {
-//            final String customToken = mAccountManager.peekAuthToken(account, authTokenType);
-//            Tasks.await(mAuthenticator.signInWithCustomToken(customToken)
-//                    .continueWithTask(new Continuation<AuthResult, Task<GetTokenResult>>() {
-//                        @Override
-//                        public Task<GetTokenResult> then(@NonNull Task<AuthResult> task) throws Exception {
-//                            return task.getResult().getUser().getToken(true);
-//                        }
-//                    })
-//                    .continueWith(new Continuation<GetTokenResult, Bundle>() {
-//                        @Override
-//                        public Bundle then(@NonNull Task<GetTokenResult> task) throws Exception {
-//                            final String token = task.getResult().getToken();
-//                            Log.e(LOG_TAG, "(" + account.toString() + ", " + (null == token ? "null" : token) + ")");
-//                            final Bundle result = new Bundle();
-//                            result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-//                            result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-//                            result.putString(AccountManager.KEY_AUTHTOKEN, token);
-//
-//                            return result;
-//                        }
-//                    }));
-//        } catch (Exception e) {
-//            Log.e("ventura", "deu pau pra reautenticar " + e.getMessage());
-//            e.printStackTrace();
-//        }
-//
-//        final Intent intent = new Intent(mContext.get(), AuthenticatorActivity.class);
-//        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-//        intent.putExtra(KEY_ACCOUNT_NAME, account.name);
-//        intent.putExtra(KEY_ACCOUNT_TYPE, account.type);
-//        intent.putExtra(KEY_AUTH_TOKEN_LABEL, authTokenType);
-//
-//        final Bundle authToken = new Bundle();
-//        authToken.putParcelable(KEY_INTENT, intent);
-//
-//        return authToken;
     }
 
     /**

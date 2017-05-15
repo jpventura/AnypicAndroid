@@ -118,30 +118,6 @@ public class AccountLocalSource implements AccountSource {
         };
 
         return Tasks.call(Worker.THREAD_POOL_EXECUTOR, callable);
-
-//        HandlerThread thread = new HandlerThread(AccountLocalSource.class.getSimpleName());
-//        thread.start();
-//
-//        mManager.getAuthToken(account, "com.jpventura.anypic", options, true, new AccountManagerCallback<Bundle>() {
-//            @Override
-//            public void run(AccountManagerFuture<Bundle> future) {
-//                try {
-//                    Bundle result = future.getResult(2000, TimeUnit.MILLISECONDS);
-//                    taskCompletionSource.setResult(result.getString(AccountManager.KEY_AUTHTOKEN, "não tem"));
-//                } catch (AuthenticatorException e) {
-//                    taskCompletionSource.setException(e);
-//                } catch (IOException e) {
-//                    taskCompletionSource.setException(e);
-//                } catch (NullPointerException e) {
-//                    taskCompletionSource.setException(new IllegalArgumentException(e));
-//                } catch (OperationCanceledException e) {
-//                    taskCompletionSource.setException(e);
-//                }
-//            }
-//        }, new Handler(thread.getLooper()));
-//
-//
-//        return taskCompletionSource.getTask();
     }
 
     @SuppressWarnings("deprecation")

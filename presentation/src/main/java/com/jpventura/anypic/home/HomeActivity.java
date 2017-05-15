@@ -124,27 +124,7 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
 
                 token = manager.peekAuthToken(account, authTokenType);
                 Log.e(LOG_TAG, "2. peek token " + token);
-//
-//
-//                Runnable runnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            Bundle result = AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, null, null).getResult();
-//                            result = (null == result ? new Bundle() : result);
-//                            Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
-//                        } catch (InterruptedIOException e) {
-//                            Log.e(LOG_TAG, e.getMessage());
-//                        } catch (OperationCanceledException e) {
-//                            Log.e(LOG_TAG, e.getMessage());
-//                        } catch (IOException e) {
-//                            Log.e(LOG_TAG, e.getMessage());
-//                        } catch (AuthenticatorException e) {
-//                            Log.e(LOG_TAG, e.getMessage());
-//                        }
-//
-//                    }
-//                };
+
 //
                 AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, new AccountManagerCallback<Bundle>() {
                     @Override
@@ -167,62 +147,10 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
                         } catch (IOException e) {
                             Log.e(LOG_TAG, e.getMessage());
                         } catch (AuthenticatorException e) {
-
-
-
                             Log.e(LOG_TAG, e.getMessage());
                         }
                     }
                 }, null);
-
-              //  new Thread(runnable).start();
-
-//                Runnable runnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Log.e(LOG_TAG, "blocking token Runnable" + account.toString());
-//
-//
-//                            // String token = AccountManager.get(getApplicationContext()).blockingGetAuthToken(account, authTokenType, notifyAuthFailure);
-//                            AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, new AccountManagerCallback<Bundle>() {
-//                                @Override
-//                                public void run(AccountManagerFuture<Bundle> future) {
-//                                    Log.e(LOG_TAG, "blocking token AccountManagerFuture" + account.toString());
-//
-//                                    try {
-//                                        Bundle result = future.getResult();
-//                                        result = (null == result ? new Bundle() : result);
-//                                        Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
-//                                    } catch (InterruptedIOException e) {
-//                                        Log.e(LOG_TAG, e.getMessage());
-//                                    } catch (OperationCanceledException e) {
-//                                        Log.e(LOG_TAG, e.getMessage());
-//                                    } catch (IOException e) {
-//                                        Log.e(LOG_TAG, e.getMessage());
-//                                    } catch (AuthenticatorException e) {
-//                                        Log.e(LOG_TAG, e.getMessage());
-//                                    }
-//                                }
-//                            }, new Handler(getMainLooper()));
-//                    }
-//
-//                };
-//
-//                new  Thread(runnable).start();
-
-//                Tasks.call(AsyncTask.SERIAL_EXECUTOR, callable)
-//                        .addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Log.e(LOG_TAG, "onFailure(" + e.getMessage() + ")");
-//                            }
-//                        })
-//                        .addOnSuccessListener(new OnSuccessListener<String>() {
-//                            @Override
-//                            public void onSuccess(String authToken) {
-//                                Log.d(LOG_TAG, "onSuccess(" + authToken + ")");
-//                            }
-//                        });
             }
         });
 
