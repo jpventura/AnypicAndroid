@@ -125,33 +125,55 @@ public class HomeActivity extends AppCompatActivity implements HomeContract.View
                 token = manager.peekAuthToken(account, authTokenType);
                 Log.e(LOG_TAG, "2. peek token " + token);
 
-//
-                AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, new AccountManagerCallback<Bundle>() {
+                Tasks.call(new Callable<String>() {
                     @Override
-                    public void run(AccountManagerFuture<Bundle> future) {
-                        Log.e(LOG_TAG, "blocking token AccountManagerFuture" + account.toString());
-
-                        try {
-                            int i = 0;
-                            while (!future.isDone()) {
-                                Log.d("ventura", "busy waiting " + Integer.toString(i++));
-                            }
-
-                            Bundle result = future.getResult();
-                            result = (null == result ? new Bundle() : result);
-                            Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
-                        } catch (InterruptedIOException e) {
-                            Log.e(LOG_TAG, e.getMessage());
-                        } catch (OperationCanceledException e) {
-                            Log.e(LOG_TAG, e.getMessage());
-                        } catch (IOException e) {
-                            Log.e(LOG_TAG, e.getMessage());
-                        } catch (AuthenticatorException e) {
-                            Log.e(LOG_TAG, e.getMessage());
-                        }
+                    public String call() throws Exception {
+                        return AccountManager.get(getApplicationContext()).blockingGetAuthToken(account, authTokenType, true);
                     }
-                }, null);
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                Log.e("ventura", "onFailure " + e.getMessage());
+                            }
+                        })
+                        .addOnSuccessListener(new OnSuccessListener<String>() {
+                            @Override
+                            public void onSuccess(String s) {
+                                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+                                Log.d("ventura", "onSuccess " + s);
+                            }
+                        });
+//
+//                AccountManager.get(getApplicationContext()).getAuthToken(account, authTokenType, new Bundle(), HomeActivity.this, new AccountManagerCallback<Bundle>() {
+//                    @Override
+//                    public void run(AccountManagerFuture<Bundle> future) {
+//                        Log.e(LOG_TAG, "blocking token AccountManagerFuture" + account.toString());
+//
+//                        try {
+//                            int i = 0;
+//                            while (!future.isDone()) {
+//                                Log.d("ventura", "busy waiting " + Integer.toString(i++));
+//                            }
+//
+//                            Bundle result = future.getResult();
+//                            result = (null == result ? new Bundle() : result);
+//                            Log.e(LOG_TAG, "blocking token " + result.getString(AccountManager.KEY_AUTHTOKEN, "nao tem nada"));
+//                        } catch (InterruptedIOException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (OperationCanceledException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (IOException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        } catch (AuthenticatorException e) {
+//                            Log.e(LOG_TAG, e.getMessage());
+//                        }
+//                    }
+//                }, null);
             }
+
+
         });
 
 
