@@ -15,15 +15,15 @@ android {
     signingConfigs {
         debug {
             keyAlias 'debug'
-            keyPassword 'android_debug'
+            keyPassword '4Fb9VpE4aeZGp67s'
             storeFile file('android.jks')
-            storePassword 'android'
+            storePassword 'fY2ndYbSYc8msJzV'
         }
         release {
             keyAlias 'release'
-            keyPassword 'android_release'
+            keyPassword 'Fk296fZYXHeT435x'
             storeFile file('android.jks')
-            storePassword 'android'
+            storePassword 'fY2ndYbSYc8msJzV'
         }
     }
     buildTypes {
