@@ -16,6 +16,7 @@
 
 package com.jpventura.anypic.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.jpventura.anypic.R;
+import com.jpventura.anypic.accounts.FirebaseAuthenticatorActivity;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startActivity(new Intent(MainActivity.this, FirebaseAuthenticatorActivity.class));
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
