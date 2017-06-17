@@ -32,6 +32,9 @@ import com.google.android.gms.tasks.Tasks;
 import com.jpventura.anypic.authenticator.AuthenticatorActivity;
 
 import java.lang.annotation.Retention;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
@@ -53,10 +56,17 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public static final String AUTH_TOKEN_GOOGLE = "google";
 
     private final Context mContext;
+    private final Map<String, Callable<Bundle>> mProviders;
 
     public AccountAuthenticator(@NonNull Context context) {
+        this(context, new HashMap<String, Callable<Bundle>>());
+    }
+
+    public AccountAuthenticator(@NonNull Context context,
+                                @NonNull Map<String, Callable<Bundle>> providers) {
         super(context);
         mContext = context;
+        mProviders = providers;
     }
 
     @Override
