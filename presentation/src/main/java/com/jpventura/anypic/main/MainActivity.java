@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic;
+package com.jpventura.anypic.main;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +23,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.jpventura.anypic.R;
+
+public class MainActivity extends AppCompatActivity implements MainContract.View {
 
     private TextView mTextMessage;
 
@@ -47,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private MainContract.Presenter mPresenter;
+
+    @Override
+    public void setPresenter(MainContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +64,20 @@ public class MainActivity extends AppCompatActivity {
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        setPresenter(new MainPresenter(this));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mPresenter.stop();
+        super.onStop();
     }
 
 }
