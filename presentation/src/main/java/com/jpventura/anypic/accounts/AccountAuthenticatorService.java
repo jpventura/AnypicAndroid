@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic.authenticator;
+package com.jpventura.anypic.accounts;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-public class AuthenticatorService extends Service {
+public class AccountAuthenticatorService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-
-        FirebaseAccountAuthenticator authenticator = new FirebaseAccountAuthenticator(this);
+        AccountAuthenticator authenticator = new AccountAuthenticator(this);
         return authenticator.getIBinder();
     }
 

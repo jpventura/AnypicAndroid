@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic.authenticator;
+package com.jpventura.anypic.accounts;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

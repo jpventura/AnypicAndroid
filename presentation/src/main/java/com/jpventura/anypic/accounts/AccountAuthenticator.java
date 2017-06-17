@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic.authenticator;
+package com.jpventura.anypic.accounts;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -29,6 +29,7 @@ import android.support.annotation.StringDef;
 import android.text.TextUtils;
 
 import com.google.android.gms.tasks.Tasks;
+import com.jpventura.anypic.authenticator.AuthenticatorActivity;
 
 import java.lang.annotation.Retention;
 
@@ -40,7 +41,7 @@ import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 import static android.accounts.AccountManager.KEY_INTENT;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
+public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     public static final String KEY_AUTH_TOKEN_TYPE = "authTokenType";
 
@@ -53,7 +54,7 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
 
     private final Context mContext;
 
-    public FirebaseAccountAuthenticator(@NonNull Context context) {
+    public AccountAuthenticator(@NonNull Context context) {
         super(context);
         mContext = context;
     }
