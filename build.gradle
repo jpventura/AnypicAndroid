@@ -31,6 +31,8 @@ ext {
     butterKnifeVersion = '8.5.1'
     constrainLayoutVersion = '1.0.2'
     espressoVersion = '2.2.2'
+    googlePlayServicesVersion = '11.0.1'
+    googleFirebaseVersion = rootProject.googlePlayServicesVersion
     guavaVersion = '18.0'
     junitVersion = '4.12'
     stethoVersion = '1.5.0'
