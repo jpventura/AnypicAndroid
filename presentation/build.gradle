@@ -72,3 +72,5 @@ dependencies {
 
     testImplementation "junit:junit:$rootProject.junitVersion"
 }
+
+apply plugin: 'com.google.gms.google-services'
