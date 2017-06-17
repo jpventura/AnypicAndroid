@@ -33,6 +33,7 @@ ext {
     espressoVersion = '2.2.2'
     guavaVersion = '18.0'
     junitVersion = '4.12'
+    stethoVersion = '1.5.0'
     supportLibraryVersion = '25.4.0'
     timberVersion = '4.5.1'
 }
