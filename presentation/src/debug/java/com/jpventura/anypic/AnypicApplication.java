@@ -18,6 +18,7 @@ package com.jpventura.anypic;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
 import com.facebook.stetho.Stetho;
 import com.jpventura.anypic.util.Tree;
 
@@ -28,6 +29,7 @@ public class AnypicApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FacebookSdk.sdkInitialize(this);
         Stetho.initializeWithDefaults(this);
         Timber.plant(new Tree(this));
     }

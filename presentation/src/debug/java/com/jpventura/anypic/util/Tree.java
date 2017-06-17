@@ -16,15 +16,18 @@
 
 package com.jpventura.anypic.util;
 
-import android.content.Context;
+import android.app.Application;
 import android.support.annotation.NonNull;
+
+import com.facebook.appevents.AppEventsLogger;
 
 import timber.log.Timber;
 
 public class Tree extends Timber.DebugTree {
 
-    public Tree(@NonNull final Context context) {
+    public Tree(@NonNull final Application application) {
         super();
+        AppEventsLogger.activateApp(application);
     }
 
 }

@@ -43,6 +43,11 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    buildTypes.each {
+        it.resValue 'string', 'content_authority', CONTENT_AUTHORITY
+        it.resValue 'string', 'facebook_app_id', FACEBOOK_APP_ID
+        it.resValue 'string', 'fb_login_protocol_scheme', FB_LOGIN_PROTOCOL_SCHEME
+    }
 }
 
 dependencies {
@@ -50,6 +55,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     implementation "com.android.support:design:$rootProject.supportLibraryVersion"
     implementation "com.android.support:support-vector-drawable:$rootProject.supportLibraryVersion"
+    implementation "com.facebook.android:facebook-android-sdk:4.23.0"
     implementation "com.google.guava:guava:$rootProject.guavaVersion"
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
     implementation project(':jpventura')

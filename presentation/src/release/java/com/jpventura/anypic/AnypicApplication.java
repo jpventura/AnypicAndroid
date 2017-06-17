@@ -18,6 +18,7 @@ package com.jpventura.anypic;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
 import com.jpventura.anypic.util.Tree;
 
 import timber.log.Timber;
@@ -27,6 +28,7 @@ public class AnypicApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FacebookSdk.sdkInitialize(this);
         Timber.plant(new Tree(this));
     }
 
