@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic;
+package com.jpventura.anypic.util;
 
-import android.app.Application;
-
-import com.jpventura.anypic.util.Tree;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
 import timber.log.Timber;
 
-public class AnypicApplication extends Application {
+public class Tree extends Timber.DebugTree {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Timber.plant(new Tree(this));
+    public Tree(@NonNull final Context context) {
+        super();
     }
 
 }

@@ -34,4 +34,5 @@ ext {
     guavaVersion = '18.0'
     junitVersion = '4.12'
     supportLibraryVersion = '25.4.0'
+    timberVersion = '4.5.1'
 }

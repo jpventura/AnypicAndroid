@@ -18,11 +18,16 @@ package com.jpventura.anypic;
 
 import android.app.Application;
 
+import com.jpventura.anypic.util.Tree;
+
+import timber.log.Timber;
+
 public class AnypicApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Timber.plant(new Tree(this));
     }
 
 }
