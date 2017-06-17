@@ -24,6 +24,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# Firebase Auth
+-keepattributes Signature
+-keepattributes *Annotation*
+
 # Guava
 -dontwarn javax.annotation.**
 -dontwarn javax.inject.**
