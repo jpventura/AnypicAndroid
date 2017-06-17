@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic.accounts;
+package com.jpventura.anypic.authenticator;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -28,6 +28,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.text.TextUtils;
 
+import com.google.android.gms.tasks.Tasks;
+
 import java.lang.annotation.Retention;
 
 import static android.accounts.AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE;
@@ -35,6 +37,7 @@ import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
+import static android.accounts.AccountManager.KEY_INTENT;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
@@ -61,14 +64,14 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
                              @NonNull String authTokenType,
                              String[] requiredFeatures,
                              Bundle options) throws NetworkErrorException {
-        final Intent intent = new Intent(mContext, FirebaseAuthenticatorActivity.class);
+        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
         intent.putExtra(KEY_ACCOUNT_TYPE, accountType);
         intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(KEY_AUTH_TOKEN_TYPE, authTokenType);
-        intent.putExtra(FirebaseAuthenticatorActivity.ARG_IS_ADDING_NEW_ACCOUNT, true);
+        intent.putExtra(AuthenticatorActivity.ARG_IS_ADDING_NEW_ACCOUNT, true);
 
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+        bundle.putParcelable(KEY_INTENT, intent);
         return bundle;
     }
 
@@ -111,7 +114,6 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
             try {
                 authData = Tasks.await(Tasks.forResult(authData).continueWithTask(new SignInTask(true)));
             } catch (Exception e) {
-                e.printStackTrace();
                 authData.clear();
             }
         }
@@ -124,13 +126,14 @@ public class FirebaseAccountAuthenticator extends AbstractAccountAuthenticator {
         // If we get here, then we couldn't access the user's password - so we
         // need to re-prompt them for their credentials. We do that by creating
         // an intent to display our AuthenticatorActivity.
-        final Intent intent = new Intent(mContext, FirebaseAuthenticatorActivity.class);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        intent.putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(KEY_ACCOUNT_NAME, account.name);
-        intent.putExtra(KEY_AUTH_TOKEN_TYPE, authTokenType);
         intent.putExtra(KEY_ACCOUNT_TYPE, account.type);
+        intent.putExtra(KEY_AUTH_TOKEN_TYPE, authTokenType);
+
         final Bundle bundle = new Bundle();
-        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+        bundle.putParcelable(KEY_INTENT, intent);
         return bundle;
     }
 
