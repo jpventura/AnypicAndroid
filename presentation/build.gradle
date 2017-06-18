@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -50,6 +51,22 @@ android {
     }
 }
 
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.22.2'
+    }
+}
+
+crashlytics {
+    enableNdk true
+    androidNdkOut 'src/main/obj'
+    androidNdkLibsOut 'src/main/libs'
+}
+
 dependencies {
     implementation "com.android.support.constraint:constraint-layout:$rootProject.constrainLayoutVersion"
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
@@ -57,13 +74,21 @@ dependencies {
     implementation "com.android.support:support-vector-drawable:$rootProject.supportLibraryVersion"
     implementation "com.facebook.android:facebook-android-sdk:4.23.0"
     implementation "com.google.firebase:firebase-auth:$rootProject.googleFirebaseVersion"
+    implementation "com.google.firebase:firebase-core:$rootProject.googleFirebaseVersion"
     implementation "com.google.guava:guava:$rootProject.guavaVersion"
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
     implementation project(':jpventura')
     implementation fileTree(dir: "libs", include: ["*.jar"])
-
     debugImplementation "com.facebook.stetho:stetho:$rootProject.stethoVersion"
-
+    releaseImplementation("com.crashlytics.sdk.android:answers:$rootProject.answersVersion@aar") {
+        transitive = true
+    }
+    releaseImplementation("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion@aar") {
+        transitive = true
+    }
+    releaseImplementation("com.crashlytics.sdk.android:crashlytics-ndk:$rootProject.crashlyticsNdkVersion@aar") {
+        transitive = true
+    }
     releaseImplementation "com.google.firebase:firebase-crash:$rootProject.googleFirebaseVersion"
 
     androidTestImplementation("com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion", {
@@ -71,6 +96,10 @@ dependencies {
     })
 
     testImplementation "junit:junit:$rootProject.junitVersion"
+}
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: 'com.google.gms.google-services'

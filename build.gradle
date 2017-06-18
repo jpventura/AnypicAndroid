@@ -3,10 +3,12 @@ buildscript {
     repositories {
         jcenter()
         maven { url 'https://maven.google.com' }
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0-alpha3'
         classpath 'com.google.gms:google-services:3.1.0'
+        classpath 'io.fabric.tools:gradle:1.22.2'
     }
 }
 
@@ -29,8 +31,11 @@ ext {
     targetSdkVersion = 25
 
     // App dependencies
+    answersVersion='1.3.13'
     butterKnifeVersion = '8.5.1'
     constrainLayoutVersion = '1.0.2'
+    crashlyticsVersion = '2.6.8'
+    crashlyticsNdkVersion = '1.1.6'
     espressoVersion = '2.2.2'
     googlePlayServicesVersion = '11.0.1'
     googleFirebaseVersion = rootProject.googlePlayServicesVersion
