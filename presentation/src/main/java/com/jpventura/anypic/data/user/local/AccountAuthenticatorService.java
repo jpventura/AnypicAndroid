@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic.accounts;
+package com.jpventura.anypic.data.user.local;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+
+import com.jpventura.anypic.data.user.AccountAuthenticator;
 
 public class AccountAuthenticatorService extends Service {
 

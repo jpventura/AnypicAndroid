@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jpventura.anypic.accounts;
+package com.jpventura.anypic.data.user;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -29,6 +29,7 @@ import android.support.annotation.StringDef;
 import android.text.TextUtils;
 
 import com.google.android.gms.tasks.Tasks;
+import com.jpventura.anypic.accounts.SignInTask;
 import com.jpventura.anypic.authenticator.AuthenticatorActivity;
 
 import java.lang.annotation.Retention;
