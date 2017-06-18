@@ -77,6 +77,8 @@ dependencies {
     implementation "com.google.firebase:firebase-core:$rootProject.googleFirebaseVersion"
     implementation "com.google.guava:guava:$rootProject.guavaVersion"
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
     implementation project(':jpventura')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     debugImplementation "com.facebook.stetho:stetho:$rootProject.stethoVersion"
