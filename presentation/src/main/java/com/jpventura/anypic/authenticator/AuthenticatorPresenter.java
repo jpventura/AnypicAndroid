@@ -24,6 +24,7 @@ import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.lang.ref.WeakReference;
 
@@ -37,6 +38,11 @@ class AuthenticatorPresenter implements AuthenticatorContract.Presenter,
     AuthenticatorPresenter(AuthenticatorActivity activity, LoginButton loginButton) {
         mActivity = new WeakReference<>(activity);
         mFacebookController = new FacebookController(loginButton);
+
+        // FIXME
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            mActivity.get().finish();
+        }
     }
 
     @Override
