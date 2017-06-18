@@ -17,6 +17,7 @@
 package com.jpventura.anypic.authenticator;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 import jpventura.app.BasePresenter;
 import jpventura.app.BaseView;
@@ -24,6 +25,8 @@ import jpventura.app.BaseView;
 interface AuthenticatorContract {
 
     interface Presenter extends BasePresenter {
+
+        void signIn(@NonNull final String provider);
 
         void result(int requestCode, int resultCode, Intent result);
 

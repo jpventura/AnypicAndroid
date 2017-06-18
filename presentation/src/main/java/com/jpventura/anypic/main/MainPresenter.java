@@ -16,7 +16,10 @@
 
 package com.jpventura.anypic.main;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+
+import com.jpventura.anypic.authenticator.AuthenticatorActivity;
 
 import java.lang.ref.WeakReference;
 
@@ -26,6 +29,7 @@ class MainPresenter implements MainContract.Presenter {
 
     MainPresenter(@NonNull MainActivity activity) {
         mActivity = new WeakReference<>(activity);
+        activity.startActivity(new Intent(activity, AuthenticatorActivity.class));
     }
 
     @Override

@@ -17,19 +17,49 @@
 package com.jpventura.anypic.authenticator;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.widget.Toast;
+
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
 
 import java.lang.ref.WeakReference;
 
-class AuthenticatorPresenter implements AuthenticatorContract.Presenter {
+class AuthenticatorPresenter implements AuthenticatorContract.Presenter,
+        OnFailureListener,
+        OnSuccessListener<AuthResult> {
 
     private final WeakReference<AuthenticatorActivity> mActivity;
+    private final FacebookController mFacebookController;
 
-    AuthenticatorPresenter(AuthenticatorActivity activity) {
+    AuthenticatorPresenter(AuthenticatorActivity activity, LoginButton loginButton) {
         mActivity = new WeakReference<>(activity);
+        mFacebookController = new FacebookController(loginButton);
+    }
+
+    @Override
+    public void onSuccess(AuthResult authResult) {
+        mActivity.get().finish();
+        Toast.makeText(mActivity.get(), authResult.getUser().getDisplayName(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onFailure(@NonNull Exception e) {
+        Toast.makeText(mActivity.get(), e.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void result(int requestCode, int resultCode, Intent result) {
+        mFacebookController.result(requestCode, resultCode, result);
+    }
+
+    @Override
+    public void signIn(@NonNull String provider) {
+        mFacebookController.execute()
+                .addOnFailureListener(this)
+                .addOnSuccessListener(this);
     }
 
     @Override
