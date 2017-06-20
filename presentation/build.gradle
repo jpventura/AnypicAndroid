@@ -54,6 +54,7 @@ android {
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
     }
 
     dependencies {
@@ -74,10 +75,9 @@ dependencies {
     implementation "com.android.support:customtabs:$rootProject.supportLibraryVersion"
     implementation "com.android.support:design:$rootProject.supportLibraryVersion"
     implementation "com.android.support:support-vector-drawable:$rootProject.supportLibraryVersion"
-    implementation ("com.facebook.android:facebook-android-sdk:4.23.0")
+    implementation "com.facebook.android:facebook-android-sdk:4.23.0"
     implementation "com.google.code.gson:gson:2.8.1"
-    implementation "com.google.firebase:firebase-auth:$rootProject.googleFirebaseVersion"
-    // implementation "com.google.firebase:firebase-core:$rootProject.googleFirebaseVersion"
+    implementation "com.google.firebase:firebase-auth:$rootProject.firebaseVersion"
     implementation "com.google.guava:guava:$rootProject.guavaVersion"
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
@@ -94,7 +94,7 @@ dependencies {
     releaseImplementation("com.crashlytics.sdk.android:crashlytics-ndk:$rootProject.crashlyticsNdkVersion@aar") {
         transitive = true
     }
-    releaseImplementation "com.google.firebase:firebase-crash:$rootProject.googleFirebaseVersion"
+    releaseImplementation "com.google.firebase:firebase-crash:$rootProject.firebaseVersion"
 
     androidTestImplementation("com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion", {
         exclude group: "com.android.support", module: "support-annotations"

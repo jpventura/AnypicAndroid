@@ -4,7 +4,6 @@ buildscript {
         jcenter()
         maven { url 'https://maven.google.com' }
         maven { url 'https://maven.fabric.io/public' }
-        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0-alpha4'
@@ -17,7 +16,6 @@ allprojects {
     repositories {
         jcenter()
         maven { url 'https://maven.google.com' }
-        mavenCentral()
     }
 }
 
@@ -39,8 +37,8 @@ ext {
     crashlyticsVersion = '2.6.8'
     crashlyticsNdkVersion = '1.1.6'
     espressoVersion = '2.2.2'
-    googlePlayServicesVersion = '11.0.1'
-    googleFirebaseVersion = rootProject.googlePlayServicesVersion
+    firebaseVersion = '11.0.1'
+    googlePlayServicesVersion = rootProject.firebaseVersion
     guavaVersion = '18.0'
     junitVersion = '4.12'
     rxAndroidVersion = '2.0.1'
